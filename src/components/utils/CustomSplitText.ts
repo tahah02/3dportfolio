@@ -35,39 +35,54 @@ export class SplitText {
 
     this.elements.forEach((el) => {
       this.originalHtml.set(el, el.innerHTML);
-      const text = el.innerText || el.textContent || '';
-      el.innerHTML = '';
+      this.splitNode(el, { doChars, doWords });
+    });
+  }
 
-      const wordsArr = text.split(/(\s+)/);
-      wordsArr.forEach((word) => {
-        if (/^\s+$/.test(word)) {
-          el.appendChild(document.createTextNode(word));
+  private splitNode(node: Node, options: { doChars: boolean; doWords: boolean }) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent || '';
+      if (!text.trim()) {
+        return;
+      }
+      const frag = document.createDocumentFragment();
+      const parts = text.split(/(\s+)/);
+      parts.forEach((part) => {
+        if (/^\s+$/.test(part)) {
+          frag.appendChild(document.createTextNode(part));
           return;
         }
 
-        const wordSpan = document.createElement('span');
-        wordSpan.style.display = 'inline-block';
-        wordSpan.className = 'split-word';
-
-        if (doChars) {
-          Array.from(word).forEach((char) => {
+        if (options.doChars) {
+          const wordSpan = document.createElement('span');
+          wordSpan.className = 'split-word';
+          wordSpan.style.display = 'inline-block';
+          Array.from(part).forEach((char) => {
             const charSpan = document.createElement('span');
-            charSpan.style.display = 'inline-block';
             charSpan.className = 'split-char';
+            charSpan.style.display = 'inline-block';
             charSpan.textContent = char;
             wordSpan.appendChild(charSpan);
             this.chars.push(charSpan);
           });
-        } else {
-          wordSpan.textContent = word;
-        }
-
-        el.appendChild(wordSpan);
-        if (doWords) {
+          frag.appendChild(wordSpan);
+          if (options.doWords) this.words.push(wordSpan);
+        } else if (options.doWords) {
+          const wordSpan = document.createElement('span');
+          wordSpan.className = 'split-word';
+          wordSpan.style.display = 'inline-block';
+          wordSpan.textContent = part;
+          frag.appendChild(wordSpan);
           this.words.push(wordSpan);
+        } else {
+          frag.appendChild(document.createTextNode(part));
         }
       });
-    });
+      node.parentNode?.replaceChild(frag, node);
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      const el = node as HTMLElement;
+      Array.from(el.childNodes).forEach((child) => this.splitNode(child, options));
+    }
   }
 
   revert() {
