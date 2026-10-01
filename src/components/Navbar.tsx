@@ -2,10 +2,10 @@ import { useEffect } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import HoverLinks from "./HoverLinks";
 import { gsap } from "gsap";
-import { ScrollSmoother } from "gsap-trial/ScrollSmoother";
+import { ScrollSmoother } from "./utils/ScrollSmoother";
 import "./styles/Navbar.css";
 
-gsap.registerPlugin(ScrollSmoother, ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger);
 export let smoother: ScrollSmoother;
 
 const Navbar = () => {
@@ -43,14 +43,14 @@ const Navbar = () => {
     <>
       <div className="header">
         <a href="/#" className="navbar-title" data-cursor="disable">
-          Logo
+          MrJupyter
         </a>
         <a
-          href="mailto:example@mail.com"
+          href="mailto:muhammadtahahussain020@gmail.com"
           className="navbar-connect"
           data-cursor="disable"
         >
-          example@mail.com
+          muhammadtahahussain020@gmail.com
         </a>
         <ul>
           <li>

@@ -8,26 +8,50 @@
   height: auto;
   width: var(--cWidth);
   margin: auto;
+  overflow: hidden;
 }
+
 .about-me {
   padding: 50px 0px;
   padding-bottom: 0;
-  width: 500px;
+  width: 580px;
   max-width: calc(100% - 15px);
 }
+
 .about-me h3 {
-  font-size: 25px;
+  font-size: 22px;
   text-transform: uppercase;
-  letter-spacing: 7px;
-  font-weight: 400;
-  color: var(--accentColor);
+  letter-spacing: 6px;
+  font-weight: 500;
+  color: var(--accentColor, #38bdf8);
+  margin-bottom: 18px;
 }
 
-.about-me p {
-  font-size: 33px;
+.about-quote {
+  font-size: 24px;
   font-weight: 600;
-  line-height: 36px;
-  letter-spacing: 1px;
+  line-height: 1.35;
+  color: #ffffff;
+  margin: 0 0 20px 0;
+  border-left: 3px solid #38bdf8;
+  padding-left: 14px;
+  letter-spacing: 0.5px;
+}
+
+.about-para {
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.75;
+  color: #cbd5e1;
+  margin: 0 0 16px 0;
+  letter-spacing: 0.3px;
+}
+
+.about-highlight {
+  color: #f1f5f9;
+  font-weight: 400;
+  border-left: 2px solid rgba(56, 189, 248, 0.4);
+  padding-left: 12px;
 }
 
 @media only screen and (min-width: 600px) {
@@ -35,16 +59,21 @@
     justify-content: center;
   }
 }
+
 @media only screen and (min-width: 768px) {
   .about-me {
-    width: 500px;
+    width: 560px;
     max-width: calc(100% - 70px);
     transform: translateY(0%);
   }
   .about-section {
     opacity: 1;
   }
+  .about-quote {
+    font-size: 26px;
+  }
 }
+
 @media only screen and (min-width: 1025px) {
   .about-section {
     width: var(--cWidth);
@@ -56,16 +85,28 @@
   }
   .about-me {
     padding: 0px;
-    width: 50%;
+    width: 48%;
+    max-width: 640px;
+    opacity: 0;
   }
-  .about-me p {
-    font-size: 1.9vw;
-    line-height: 2.3vw;
+  .about-quote {
+    font-size: clamp(20px, 1.6vw, 28px);
+    line-height: 1.4;
+  }
+  .about-para {
+    font-size: clamp(14px, 1.05vw, 17px);
+    line-height: 1.7;
+    margin-bottom: 14px;
   }
 }
+
 @media only screen and (min-width: 1950px) {
-  .about-me p {
-    font-size: 2.5rem;
-    line-height: 2.7rem;
+  .about-quote {
+    font-size: 2rem;
+    line-height: 1.4;
+  }
+  .about-para {
+    font-size: 1.25rem;
+    line-height: 1.8;
   }
 }

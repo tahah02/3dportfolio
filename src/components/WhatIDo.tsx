@@ -87,24 +87,22 @@ const WhatIDo = () => {
             <div className="what-corner"></div>
 
             <div className="what-content-in">
-              <h3>DEVELOP</h3>
-              <h4>Description</h4>
+              <h3>AGENTIC AI</h3>
+              <h4>Architecture & Multi-Agent Workflows</h4>
               <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas
-                quia aliquid laboriosam ducimus sit molestiae.
+                Orchestrating autonomous supervisor-worker pipelines with LangGraph, dynamic state recovery via Redis session hydration, structured Pydantic JSON, and sovereign local LLMs.
               </p>
               <h5>Skillset & tools</h5>
               <div className="what-content-flex">
-                <div className="what-tags">JavaScript</div>
-                <div className="what-tags">TypeScript</div>
-                <div className="what-tags">Three.js</div>
-                <div className="what-tags">React</div>
-                <div className="what-tags">Css</div>
-                <div className="what-tags">Node.js</div>
-                <div className="what-tags">Next.js</div>
-                <div className="what-tags">Express.js</div>
-                <div className="what-tags">PHP</div>
-                <div className="what-tags">MySql</div>
+                <div className="what-tags">LangGraph</div>
+                <div className="what-tags">LangChain</div>
+                <div className="what-tags">Python</div>
+                <div className="what-tags">FastAPI</div>
+                <div className="what-tags">Ollama</div>
+                <div className="what-tags">Milvus</div>
+                <div className="what-tags">Redis</div>
+                <div className="what-tags">SQL Server</div>
+                <div className="what-tags">Docker</div>
               </div>
               <div className="what-arrow"></div>
             </div>
@@ -128,22 +126,21 @@ const WhatIDo = () => {
             </div>
             <div className="what-corner"></div>
             <div className="what-content-in">
-              <h3>DESIGN</h3>
-              <h4>Description</h4>
+              <h3>ML & SYSTEMS</h3>
+              <h4>Financial Risk, Vision & Core Gateways</h4>
               <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quas
-                quia aliquid laboriosam ducimus sit molestiae
+                Engineering deep anomaly detection models, multi-engine OCR financial extraction, C#/.NET 8 core banking API gateways, and automated retraining MLOps pipelines.
               </p>
               <h5>Skillset & tools</h5>
               <div className="what-content-flex">
-                <div className="what-tags">Blender</div>
-                <div className="what-tags">Zbrush</div>
-                <div className="what-tags">UI Design</div>
-                <div className="what-tags">Motion</div>
-                <div className="what-tags">Rigging</div>
-                <div className="what-tags">3D Animation</div>
-                <div className="what-tags">Character Design</div>
-                <div className="what-tags">Modelling</div>
+                <div className="what-tags">TensorFlow</div>
+                <div className="what-tags">Scikit-learn</div>
+                <div className="what-tags">C# / .NET 8</div>
+                <div className="what-tags">PaddleOCR</div>
+                <div className="what-tags">EasyOCR</div>
+                <div className="what-tags">OpenCV</div>
+                <div className="what-tags">SentenceTransformers</div>
+                <div className="what-tags">Apache JMeter</div>
               </div>
               <div className="what-arrow"></div>
             </div>

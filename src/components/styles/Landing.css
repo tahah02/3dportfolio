@@ -103,9 +103,10 @@
   position: absolute;
   max-width: 1920px;
   max-height: 1080px;
-  transform: translateX(-50%);
   width: 100%;
-  left: 50%;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   z-index: 0;
   bottom: 50px;
   pointer-events: inherit;
@@ -120,8 +121,7 @@
     var(--backgroundColor) 70%
   );
   bottom: -50px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
   z-index: 9;
   position: absolute;
 }
@@ -131,8 +131,7 @@
   height: 700px;
   background-color: var(--backgroundColor);
   top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
   z-index: 9;
   position: absolute;
 }
@@ -192,57 +191,46 @@
   z-index: 9;
 }
 .landing-info h3 {
-  font-size: 22px;
-  letter-spacing: 2px;
-  font-weight: 300;
-  color: var(--accentColor);
-  margin: 0;
-}
-.landing-info h2 {
-  margin: 0;
-  margin-top: -20px;
-  margin-left: 20px;
-  font-family: "Geist", sans-serif;
-  font-weight: 600;
-  font-size: 32px;
-  line-height: 40px;
-  position: relative;
-  display: flex;
-  flex-wrap: nowrap;
+  font-size: 16px;
+  letter-spacing: 2.5px;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  color: #38bdf8;
+  margin: 0 0 4px 0;
 }
-.landing-h2-info-1 {
-  position: absolute;
-  top: 0;
-}
-h2.landing-info-h2 {
-  color: #c481ff;
-  font-size: 42px;
-  width: 120%;
-  margin: 0;
-  font-family: "Geist", sans-serif;
-  font-weight: 600;
+
+.landing-rotator-wrapper {
+  overflow: hidden;
+  height: clamp(36px, 4vw, 56px);
+  display: flex;
+  align-items: center;
   position: relative;
-  margin-left: -5px;
-}
-.landing-h2-2 {
-  position: absolute;
-  top: 0;
-}
-.landing-info-h2::after {
-  content: "";
-  position: absolute;
   width: 100%;
-  height: 120%;
-  z-index: 3;
-  background-image: linear-gradient(
-    0deg,
-    var(--backgroundColor) 40%,
-    rgba(0, 0, 0, 0) 110%
-  );
-  top: 0;
-  left: 0;
+}
+
+.landing-rotating-title {
+  margin: 0;
+  font-family: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight: 700;
+  font-size: clamp(18px, 2.1vw, 32px);
+  line-height: 1.25;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #ffffff;
+  white-space: nowrap;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
+  display: inline-block;
+  text-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+}
+
+.landing-rotating-title.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.landing-rotating-title.out {
+  opacity: 0;
+  transform: translateY(-28px);
 }
 @media screen and (min-width: 500px) {
   .landing-circle2 {
@@ -261,12 +249,12 @@ h2.landing-info-h2 {
     font-size: 30px;
     line-height: 30px;
   }
-  .landing-info h2 {
-    font-size: 35px;
-    line-height: 40px;
+  .landing-rotator-wrapper {
+    height: 52px;
   }
-  h2.landing-info-h2 {
-    font-size: 38px;
+  .landing-rotating-title {
+    font-size: 36px;
+    line-height: 48px;
   }
 }
 @media screen and (min-width: 768px) {
@@ -281,14 +269,14 @@ h2.landing-info-h2 {
     line-height: 35px;
   }
   .landing-info h3 {
-    font-size: 25px;
+    font-size: 18px;
   }
-  .landing-info h2 {
-    font-size: 45px;
-    line-height: 42px;
+  .landing-rotator-wrapper {
+    height: 54px;
   }
-  h2.landing-info-h2 {
-    font-size: 55px;
+  .landing-rotating-title {
+    font-size: clamp(22px, 3vw, 38px);
+    line-height: 52px;
   }
 }
 @media screen and (min-width: 1025px) {
@@ -297,6 +285,9 @@ h2.landing-info-h2 {
     bottom: 0;
     z-index: 11;
     position: fixed;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
   }
   .character-model::after,
   .character-model::before {
@@ -317,13 +308,15 @@ h2.landing-info-h2 {
     transform: translate(0%, -50%);
     right: auto;
     left: 66%;
+    width: 33%;
+    max-width: 480px;
   }
 }
 @media screen and (min-width: 1200px) {
   .landing-intro {
     top: 50%;
     left: auto;
-    right: 70%;
+    right: 66%;
     transform: translate(0%, -50%);
   }
 
@@ -334,7 +327,9 @@ h2.landing-info-h2 {
     text-align: left;
     transform: translate(0%, -50%);
     right: auto;
-    left: 70%;
+    left: 66%;
+    width: 33%;
+    max-width: 520px;
   }
 }
 @media screen and (min-width: 1600px) {
@@ -346,13 +341,17 @@ h2.landing-info-h2 {
     line-height: 55px;
   }
   .landing-info h3 {
-    font-size: 35px;
+    font-size: 20px;
   }
-  .landing-info h2 {
-    font-size: 65px;
-    line-height: 62px;
+  .landing-info {
+    left: 66%;
+    max-width: 580px;
   }
-  h2.landing-info-h2 {
-    font-size: 75px;
+  .landing-rotator-wrapper {
+    height: 56px;
+  }
+  .landing-rotating-title {
+    font-size: 36px;
+    line-height: 50px;
   }
 }

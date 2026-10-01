@@ -10,24 +10,59 @@ import {
   CylinderCollider,
   RapierRigidBody,
 } from "@react-three/rapier";
+import { skillsCategories, SkillCategory } from "../data";
 
-const textureLoader = new THREE.TextureLoader();
-const imageUrls = [
-  "/images/react2.webp",
-  "/images/next2.webp",
-  "/images/node2.webp",
-  "/images/express.webp",
-  "/images/mongo.webp",
-  "/images/mysql.webp",
-  "/images/typescript.webp",
-  "/images/javascript.webp",
+const aiSkills = [
+  { name: "Python", bg: "#0f172a", text: "#38bdf8", border: "#38bdf8" },
+  { name: "LangGraph", bg: "#0b1329", text: "#22d3ee", border: "#22d3ee" },
+  { name: "Milvus", bg: "#0d1b2a", text: "#60a5fa", border: "#60a5fa" },
+  { name: "Redis", bg: "#1f1016", text: "#f87171", border: "#f87171" },
+  { name: "FastAPI", bg: "#06221c", text: "#34d399", border: "#34d399" },
+  { name: "PyTorch", bg: "#23140c", text: "#fb923c", border: "#fb923c" },
+  { name: "TensorFlow", bg: "#231808", text: "#fbbf24", border: "#fbbf24" },
+  { name: "Ollama", bg: "#18202f", text: "#f1f5f9", border: "#94a3b8" },
+  { name: "Docker", bg: "#0b1d30", text: "#38bdf8", border: "#38bdf8" },
+  { name: ".NET 8", bg: "#1c112b", text: "#c084fc", border: "#c084fc" },
+  { name: "PaddleOCR", bg: "#0a1e22", text: "#2dd4bf", border: "#2dd4bf" },
+  { name: "Scikit-Learn", bg: "#22170d", text: "#f59e0b", border: "#f59e0b" },
+  { name: "SQL Server", bg: "#220e12", text: "#f43f5e", border: "#f43f5e" },
+  { name: "LangChain", bg: "#0d1a29", text: "#38bdf8", border: "#38bdf8" },
+  { name: "OpenCV", bg: "#111827", text: "#4ade80", border: "#4ade80" },
 ];
-const textures = imageUrls.map((url) => textureLoader.load(url));
+
+function createSkillTexture(skill: { name: string; bg: string; text: string; border: string }) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 512;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return new THREE.Texture();
+
+  ctx.fillStyle = skill.bg;
+  ctx.beginPath();
+  ctx.arc(256, 256, 250, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = skill.border;
+  ctx.lineWidth = 14;
+  ctx.beginPath();
+  ctx.arc(256, 256, 236, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.fillStyle = skill.text;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = "bold 58px system-ui, sans-serif";
+  ctx.fillText(skill.name, 256, 256);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.needsUpdate = true;
+  return texture;
+}
 
 const sphereGeometry = new THREE.SphereGeometry(1, 28, 28);
 
-const spheres = [...Array(30)].map(() => ({
-  scale: [0.7, 1, 0.8, 1, 1][Math.floor(Math.random() * 5)],
+const spheres = aiSkills.map((_, i) => ({
+  scale: [0.95, 1.05, 1, 1.1][i % 4],
 }));
 
 type SphereProps = {
@@ -48,28 +83,35 @@ function SphereGeo({
   const api = useRef<RapierRigidBody | null>(null);
 
   useFrame((_state, delta) => {
-    if (!isActive) return;
-    delta = Math.min(0.1, delta);
+    if (!isActive || !api.current) return;
+    delta = Math.min(0.08, delta);
+    const pos = api.current.translation();
+    // Pull gently towards lower center (Y = -2.8) so header remains uncluttered
+    const targetY = -2.8;
+    const diffX = pos.x;
+    const diffY = pos.y - targetY;
+    const diffZ = pos.z;
+    const dist = Math.sqrt(diffX * diffX + diffY * diffY + diffZ * diffZ) || 1;
+
     const impulse = vec
-      .copy(api.current!.translation())
-      .normalize()
+      .set(diffX / dist, diffY / dist, diffZ / dist)
       .multiply(
         new THREE.Vector3(
-          -50 * delta * scale,
-          -150 * delta * scale,
-          -50 * delta * scale
+          -45 * delta * scale,
+          -75 * delta * scale,
+          -45 * delta * scale
         )
       );
 
-    api.current?.applyImpulse(impulse, true);
+    api.current.applyImpulse(impulse, true);
   });
 
   return (
     <RigidBody
-      linearDamping={0.75}
-      angularDamping={0.15}
-      friction={0.2}
-      position={[r(20), r(20) - 25, r(20) - 10]}
+      linearDamping={0.8}
+      angularDamping={0.2}
+      friction={0.25}
+      position={[r(16), r(12) - 15, r(14) - 8]}
       ref={api}
       colliders={false}
     >
@@ -126,87 +168,169 @@ function Pointer({ vec = new THREE.Vector3(), isActive }: PointerProps) {
 
 const TechStack = () => {
   const [isActive, setIsActive] = useState(false);
+  const [viewMode, setViewMode] = useState<"balls" | "matrix">("balls");
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY || document.documentElement.scrollTop;
-      const threshold = document
-        .getElementById("work")!
-        .getBoundingClientRect().top;
-      setIsActive(scrollY > threshold);
+      const workEl = document.getElementById("work");
+      if (workEl) {
+        const threshold = workEl.getBoundingClientRect().top;
+        setIsActive(scrollY > threshold);
+      } else {
+        setIsActive(true);
+      }
     };
-    document.querySelectorAll(".header a").forEach((elem) => {
-      const element = elem as HTMLAnchorElement;
-      element.addEventListener("click", () => {
-        const interval = setInterval(() => {
-          handleScroll();
-        }, 10);
-        setTimeout(() => {
-          clearInterval(interval);
-        }, 1000);
-      });
-    });
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   const materials = useMemo(() => {
-    return textures.map(
-      (texture) =>
-        new THREE.MeshPhysicalMaterial({
-          map: texture,
-          emissive: "#ffffff",
-          emissiveMap: texture,
-          emissiveIntensity: 0.3,
-          metalness: 0.5,
-          roughness: 1,
-          clearcoat: 0.1,
-        })
-    );
+    return aiSkills.map((skill) => {
+      const texture = createSkillTexture(skill);
+      return new THREE.MeshPhysicalMaterial({
+        map: texture,
+        emissive: skill.border,
+        emissiveIntensity: 0.12,
+        metalness: 0.7,
+        roughness: 0.35,
+        clearcoat: 0.4,
+        clearcoatRoughness: 0.1,
+      });
+    });
   }, []);
 
-  return (
-    <div className="techstack">
-      <h2> My Techstack</h2>
+  // Filter 14 categories based on user query
+  const filteredCategories = useMemo<SkillCategory[]>(() => {
+    if (!searchQuery.trim()) return skillsCategories;
+    const q = searchQuery.toLowerCase();
+    const result: SkillCategory[] = [];
+    for (const cat of skillsCategories) {
+      const matchesCat =
+        cat.name.toLowerCase().includes(q) ||
+        cat.summary.toLowerCase().includes(q);
+      const matchingSkills = cat.skills.filter((s: string) =>
+        s.toLowerCase().includes(q)
+      );
+      if (matchesCat) {
+        result.push(cat);
+      } else if (matchingSkills.length > 0) {
+        result.push({ ...cat, skills: matchingSkills });
+      }
+    }
+    return result;
+  }, [searchQuery]);
 
-      <Canvas
-        shadows
-        gl={{ alpha: true, stencil: false, depth: false, antialias: false }}
-        camera={{ position: [0, 0, 20], fov: 32.5, near: 1, far: 100 }}
-        onCreated={(state) => (state.gl.toneMappingExposure = 1.5)}
-        className="tech-canvas"
-      >
-        <ambientLight intensity={1} />
-        <spotLight
-          position={[20, 20, 25]}
-          penumbra={1}
-          angle={0.2}
-          color="white"
-          castShadow
-          shadow-mapSize={[512, 512]}
-        />
-        <directionalLight position={[0, 5, -4]} intensity={2} />
-        <Physics gravity={[0, 0, 0]}>
-          <Pointer isActive={isActive} />
-          {spheres.map((props, i) => (
-            <SphereGeo
-              key={i}
-              {...props}
-              material={materials[Math.floor(Math.random() * materials.length)]}
-              isActive={isActive}
+  return (
+    <div
+      className={`techstack ${viewMode === "matrix" ? "matrix-mode" : ""}`}
+      id="techstack"
+    >
+      {/* Header with Title and Toggle Switch */}
+      <div className="techstack-header">
+        <h2>
+          My <span>Techstack</span>
+        </h2>
+        <div className="tech-toggle-bar">
+          <button
+            type="button"
+            className={`tech-toggle-btn ${viewMode === "balls" ? "active" : ""}`}
+            onClick={() => setViewMode("balls")}
+            data-cursor="disable"
+          >
+            <span>🪐</span> 3D Interactive Balls
+          </button>
+          <button
+            type="button"
+            className={`tech-toggle-btn ${viewMode === "matrix" ? "active" : ""}`}
+            onClick={() => setViewMode("matrix")}
+            data-cursor="disable"
+          >
+            <span>📋</span> Full Tech Matrix (14 Domains)
+          </button>
+        </div>
+      </div>
+
+      {/* VIEW 1: 3D Physics Balls */}
+      {viewMode === "balls" && (
+        <Canvas
+          shadows
+          gl={{ alpha: true, stencil: false, depth: false, antialias: true }}
+          camera={{ position: [0, 0, 22], fov: 33, near: 1, far: 100 }}
+          onCreated={(state) => (state.gl.toneMappingExposure = 1.3)}
+          className="tech-canvas"
+        >
+          <ambientLight intensity={1.2} />
+          <spotLight
+            position={[15, 20, 25]}
+            penumbra={1}
+            angle={0.25}
+            color="#e0f2fe"
+            castShadow
+            shadow-mapSize={[512, 512]}
+          />
+          <directionalLight position={[0, -5, -4]} intensity={1.5} color="#38bdf8" />
+          <Physics gravity={[0, 0, 0]}>
+            <Pointer isActive={isActive} />
+            {spheres.map((props, i) => (
+              <SphereGeo
+                key={i}
+                {...props}
+                material={materials[i % materials.length]}
+                isActive={isActive}
+              />
+            ))}
+          </Physics>
+          <Environment
+            files="/models/char_enviorment.hdr"
+            environmentIntensity={0.6}
+            environmentRotation={[0, 4, 2]}
+          />
+          <EffectComposer enableNormalPass={false}>
+            <N8AO color="#060913" aoRadius={2} intensity={1.2} />
+          </EffectComposer>
+        </Canvas>
+      )}
+
+      {/* VIEW 2: Complete 14-Domain Tech Matrix */}
+      {viewMode === "matrix" && (
+        <div className="tech-matrix-container">
+          <div className="tech-matrix-search-box">
+            <input
+              type="text"
+              placeholder="Search stack (e.g. LangGraph, Milvus, Redis, Docker, PyTorch, C#)..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="tech-matrix-search-input"
+              data-cursor="disable"
             />
-          ))}
-        </Physics>
-        <Environment
-          files="/models/char_enviorment.hdr"
-          environmentIntensity={0.5}
-          environmentRotation={[0, 4, 2]}
-        />
-        <EffectComposer enableNormalPass={false}>
-          <N8AO color="#0f002c" aoRadius={2} intensity={1.15} />
-        </EffectComposer>
-      </Canvas>
+          </div>
+
+          <div className="tech-matrix-grid">
+            {filteredCategories.map((cat: any) => (
+              <div key={cat.id || cat.number} className="tech-domain-card">
+                <div className="tech-domain-header">
+                  <span className="tech-domain-number">{cat.number}</span>
+                  <span className="tech-domain-count">{cat.skills.length} skills</span>
+                </div>
+                <h3 className="tech-domain-title">{cat.name}</h3>
+                <p className="tech-domain-summary">{cat.summary}</p>
+                <div className="tech-skill-pills">
+                  {cat.skills.map((skill: string, sIdx: number) => (
+                    <span key={sIdx} className="tech-skill-pill">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
